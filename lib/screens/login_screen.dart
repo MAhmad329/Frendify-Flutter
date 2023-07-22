@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String error = '';
-  bool _validate = false;
+  bool _validated = true;
   bool showSpinner = false;
 
   @override
@@ -70,7 +70,15 @@ class _LoginState extends State<Login> {
                                     color: Colors.red,
                                   ),
                                 ),
-                                errorText: _validate ? '' : null,
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(32.r)),
+                                  borderSide: const BorderSide(
+                                    width: 2,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                errorText: _validated ? null : '',
                                 errorStyle: TextStyle(height: 0.h),
                                 hintText: 'Email'),
                           ),
@@ -81,13 +89,22 @@ class _LoginState extends State<Login> {
                             controller: _passwordController,
                             decoration: kTextFieldDecoration.copyWith(
                               errorBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(32.r)),
-                                  borderSide: const BorderSide(
-                                    width: 2,
-                                    color: Colors.red,
-                                  )),
-                              errorText: _validate ? error : null,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.r)),
+                                borderSide: const BorderSide(
+                                  width: 2,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.r)),
+                                borderSide: const BorderSide(
+                                  width: 2,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              errorText: _validated ? null : error,
                               hintText: 'Password',
                             ),
                           ),
@@ -121,7 +138,7 @@ class _LoginState extends State<Login> {
                               try {
                                 setState(
                                   () {
-                                    _validate = false;
+                                    _validated = true;
                                     showSpinner = true;
                                   },
                                 );
@@ -135,7 +152,7 @@ class _LoginState extends State<Login> {
                                 }
                               } on FirebaseAuthException {
                                 error = 'Email or Password does not match!';
-                                _validate = true;
+                                _validated = false;
                               }
                               setState(
                                 () {
