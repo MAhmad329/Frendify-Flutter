@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "370678778505",
+    "project_id": "frendify-7ced9",
+    "storage_bucket": "frendify-7ced9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:370678778505:android:ae836b2d32fdadf6459458",
+        "android_client_info": {
+          "package_name": "com.example.frendify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "370678778505-qf5atrmlg9aqnibv2dc6nun0uhs3puc7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCE-ayeIchsqvB1I9TLrJO2KEdDdqhQbb0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "370678778505-qf5atrmlg9aqnibv2dc6nun0uhs3puc7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "370678778505-640lp6prqmi8rvg449m9n59orp5bvtiu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.newswave"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
