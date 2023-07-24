@@ -51,7 +51,7 @@ InputDecoration kPostTextFieldDecoration = InputDecoration(
   ),
 );
 
-const kTextFieldDecoration = InputDecoration(
+InputDecoration kTextFieldDecoration = const InputDecoration(
   hintText: 'hint text',
   hintStyle: TextStyle(color: Colors.grey),
   filled: true,
@@ -67,5 +67,19 @@ const kTextFieldDecoration = InputDecoration(
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(color: Color(0xFF987EFF), width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
+  ),
+  errorBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.circular(32)),
+    borderSide: BorderSide(
+      width: 2,
+      color: Colors.red,
+    ),
+  ),
+  focusedErrorBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.circular(32)),
+    borderSide: BorderSide(
+      width: 2,
+      color: Colors.red,
+    ),
   ),
 );

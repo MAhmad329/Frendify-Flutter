@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/constants.dart';
 import 'package:frendify/Views/login_screen.dart';
-import 'package:frendify/Views/signup.dart';
+import 'package:frendify/Views/signup_screen.dart';
 
 class CustomRichText extends StatelessWidget {
   const CustomRichText({
@@ -11,24 +11,24 @@ class CustomRichText extends StatelessWidget {
     required this.text1,
     required this.text2,
     required this.clickable,
-    this.screen,
+    this.currentScreen,
   });
   final String text1;
   final String text2;
-  final String? screen;
+  final String? currentScreen;
   final bool clickable;
 
   @override
   Widget build(BuildContext context) {
     TapGestureRecognizer checkScreen() {
-      if (screen == 'login') {
+      if (currentScreen == 'login') {
         return TapGestureRecognizer()
           ..onTap = () => Navigator.push(
               context, MaterialPageRoute(builder: (context) => const Signup()));
-      } else if (screen == 'signup') {
+      } else if (currentScreen == 'signup') {
         return TapGestureRecognizer()
           ..onTap = () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Login()));
+              context, MaterialPageRoute(builder: (context) => const Login()));
       } else {
         return TapGestureRecognizer();
       }

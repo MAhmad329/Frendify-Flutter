@@ -5,17 +5,16 @@ import 'package:frendify/Controllers/auth.dart';
 import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 import '../widgets/custom_rich_text.dart';
-import 'forgetpassword.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class Signup extends StatefulWidget {
+  const Signup({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Signup> createState() => _SignupState();
 }
 
-class _LoginState extends State<Login> {
+class _SignupState extends State<Signup> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String error = '';
@@ -24,14 +23,12 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: SafeArea(
+      body: SafeArea(
+        child: ModalProgressHUD(
+          inAsyncCall: showSpinner,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 30.w),
             child: Row(
@@ -51,17 +48,36 @@ class _LoginState extends State<Login> {
                       ),
                       Column(
                         children: [
-                          const CustomRichText(
-                            text1: 'Sign In to ',
-                            text2: 'Frendify',
-                            clickable: false,
+                          Text(
+                            'Create new Account',
+                            style: kText1.copyWith(fontSize: 20.sp),
                           ),
                           SizedBox(
-                            height: 20.h,
+                            height: 40.h,
                           ),
+                          // const CustomTf(hintText: 'Username'),
+                          // SizedBox(
+                          //   height: 12.h,
+                          // ),
                           TextField(
                             controller: _emailController,
                             decoration: kTextFieldDecoration.copyWith(
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(32.r)),
+                                  borderSide: const BorderSide(
+                                    width: 2,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(32.r)),
+                                  borderSide: const BorderSide(
+                                    width: 2,
+                                    color: Colors.red,
+                                  ),
+                                ),
                                 errorText: _validated ? null : '',
                                 errorStyle: TextStyle(height: 0.h),
                                 hintText: 'Email'),
@@ -73,33 +89,38 @@ class _LoginState extends State<Login> {
                             controller: _passwordController,
                             obscureText: true,
                             decoration: kTextFieldDecoration.copyWith(
+                              errorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.r)),
+                                borderSide: const BorderSide(
+                                  width: 2,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.r)),
+                                borderSide: const BorderSide(
+                                  width: 2,
+                                  color: Colors.red,
+                                ),
+                              ),
                               errorText: _validated ? null : error,
                               hintText: 'Password',
                             ),
                           ),
                           SizedBox(
-                            height: 6.h,
+                            height: 12.h,
                           ),
-                          Align(
-                            alignment: width > 500
-                                ? Alignment.center
-                                : Alignment.centerRight,
-                            child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ForgetPassword()));
-                                },
-                                child: Text('Forgot Your Password?',
-                                    style: kBasicText)),
-                          ),
+                          // const CustomTf(
+                          //   hintText: 'Confirm Password',
+                          //   obsText: true,
+                          // ),
                           SizedBox(
                             height: 33.h,
                           ),
                           MyButton(
-                            buttonText: 'Sign in',
+                            buttonText: 'Sign Up',
                             buttonColor: const Color(0xFF987EFF),
                             buttonWidth: 350,
                             buttonHeight: 50,
@@ -111,27 +132,42 @@ class _LoginState extends State<Login> {
                                     showSpinner = true;
                                   },
                                 );
-                                await Auth().signIn(
+                                await Auth().signUp(
                                     email: _emailController.text,
                                     password: _passwordController.text);
-
-                                if (mounted) {
-                                  Navigator.popAndPushNamed(
-                                      context, 'home_screen');
-                                }
-                              } on FirebaseAuthException catch (e) {
-                                if (e.code == 'network-request-failed') {
+                                if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Center(
-                                        child: Text(
-                                            'Failed to connect to Firebase. Please check your network.'),
-                                      ),
+                                      content: Text(
+                                          'Your account has been created successfully.'),
                                       duration: Duration(seconds: 3),
                                     ),
                                   );
+                                  Navigator.popAndPushNamed(
+                                      context, 'login_screen');
+                                }
+                              } on FirebaseAuthException catch (e) {
+                                if (e.code == 'email-already-in-use') {
+                                  error = 'Email already exists';
+                                  _validated = false;
+                                } else if (e.code == 'weak-password') {
+                                  error = 'Weak password. Try another one!';
+                                  _validated = false;
+                                } else if (_emailController.text.isEmpty ||
+                                    _passwordController.text.isEmpty) {
+                                  error = 'One or more fields are empty!';
+                                  _validated = false;
+                                } else if (e.code == 'network-request-failed') {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Center(
+                                          child:
+                                              Text('No Internet Connection!')),
+                                      duration: Duration(seconds: 5),
+                                    ),
+                                  );
                                 } else {
-                                  error = 'Email or Password does not match!';
+                                  error = 'Invalid email format';
                                   _validated = false;
                                 }
                               }
@@ -144,14 +180,12 @@ class _LoginState extends State<Login> {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 50.h,
-                      ),
+                      const SizedBox(),
                       const CustomRichText(
-                        text1: "Don't have an Account? ",
-                        text2: 'Sign Up',
+                        text1: "Already have an account? ",
+                        text2: 'Sign In',
                         clickable: true,
-                        currentScreen: 'login',
+                        currentScreen: 'signup',
                       ),
                     ],
                   ),
