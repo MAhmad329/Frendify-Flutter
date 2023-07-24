@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/screens/others_profile_screen.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/Views/others_profile_screen.dart';
+import 'package:frendify/constants.dart';
 import 'bottom_sheet_lists.dart';
 import 'bottom_sheet.dart';
 

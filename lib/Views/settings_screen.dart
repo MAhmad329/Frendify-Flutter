@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/Controllers/auth.dart';
+import 'package:frendify/constants.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -220,7 +220,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               InkWell(
                 onTap: () async {
-                  await FirebaseAuth.instance.signOut();
+                  await Auth().signOut();
                   if (context.mounted) {
                     Navigator.popAndPushNamed(context, 'login_screen');
                   }

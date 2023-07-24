@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/screens/reset_password.dart';
-import 'package:frendify/widgets/code_circles.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
-import '../widgets/custom_rich_text.dart';
+import 'package:frendify/widgets/text_field.dart';
 
-class EmailVerification extends StatelessWidget {
-  const EmailVerification({Key? key}) : super(key: key);
+class ResetPassword extends StatelessWidget {
+  const ResetPassword({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +17,8 @@ class EmailVerification extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Email Verification',
-          style: kText1.copyWith(fontWeight: FontWeight.w500),
+          'Reset Password',
+          style: kText1,
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -36,47 +34,43 @@ class EmailVerification extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    'Get Your Code',
+                    'New Password',
                     style: kText1.copyWith(fontSize: 25.sp),
                   ),
                   SizedBox(height: 10.h),
                   SizedBox(
-                    width: 250.w,
+                    width: 300.w,
                     child: Text(
-                      'Enter the 4 digit code sent to your email address',
+                      'New password must be different from previously used passwords',
                       style: kText2.copyWith(fontSize: 14.sp),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   SizedBox(
-                    height: 40.h,
+                    height: 35.h,
                   ),
-                  const CodeCircles(),
+                  const CustomTf(
+                    hintText: 'Password',
+                    obsText: true,
+                  ),
+                  SizedBox(
+                    height: 12.h,
+                  ),
+                  const CustomTf(
+                    hintText: 'Confirm Password',
+                    obsText: true,
+                  ),
                   SizedBox(
                     height: 20.h,
                   ),
-                  MyButton(
-                    buttonText: 'Verify',
-                    buttonColor: const Color(0xFF987EFF),
+                  const MyButton(
+                    buttonText: 'Reset Password',
+                    buttonColor: Color(0xFF987EFF),
                     buttonWidth: 350,
                     buttonHeight: 50,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ResetPassword(),
-                      ),
-                    ),
                   ),
                   SizedBox(
-                    height: 40.h,
-                  ),
-                  const CustomRichText(
-                    text1: "Didn't receive the code? ",
-                    text2: 'Resend now',
-                    clickable: true,
-                  ),
-                  SizedBox(
-                    height: 50.h,
+                    height: 75.h,
                   ),
                 ],
               ),

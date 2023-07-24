@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/widgets/chat_bubble.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/constants.dart';
 
 class ChatDetailsScreen extends StatelessWidget {
   const ChatDetailsScreen({Key? key}) : super(key: key);

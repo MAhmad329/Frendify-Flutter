@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/widgets/bottom_sheet_lists.dart';
 import 'bottom_sheet.dart';
-import 'constants.dart';
+import '../constants.dart';
 
 class PostOptions extends StatefulWidget {
   const PostOptions(

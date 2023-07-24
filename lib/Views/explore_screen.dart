@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/widgets/search_bar.dart';
-import '../widgets/constants.dart';
-import '../widgets/horizontalscroll.dart';
+import '../constants.dart';
+import '../widgets/horizontal_scroll.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({Key? key}) : super(key: key);

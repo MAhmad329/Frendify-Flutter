@@ -1,67 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/constants.dart';
+import '../Models/notifications_model.dart';
 
 class NotificationScreen extends StatelessWidget {
   NotificationScreen({Key? key}) : super(key: key);
-  final List<Map<String, dynamic>> notifications = [
-    {
-      'day': 'Today',
-      'notifications': [
-        {
-          'id': 1,
-          'person': {
-            'name': 'John Doe',
-            'image': 'assets/profile.jpeg',
-          },
-          'description':
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-          'time': '10:00 AM',
-        },
-        {
-          'id': 2,
-          'person': {
-            'name': 'Jane Smith',
-            'image': 'assets/profile.jpeg',
-          },
-          'description':
-              'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-          'time': '12:30 PM',
-        },
-      ],
-    },
-    {
-      'day': 'Yesterday',
-      'notifications': [
-        {
-          'id': 3,
-          'person': {
-            'name': 'Alice Johnson',
-            'image': 'assets/profile.jpeg',
-          },
-          'description':
-              'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-          'time': '9:45 AM',
-        },
-      ],
-    },
-    {
-      'day': 'This Weekend',
-      'notifications': [
-        {
-          'id': 4,
-          'person': {
-            'name': 'Alice Johnson',
-            'image': 'assets/profile.jpeg',
-          },
-          'description':
-              'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.',
-          'time': '3:00 PM',
-        },
-      ],
-    },
-    // Add more days and notifications here...
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +30,7 @@ class NotificationScreen extends StatelessWidget {
       body: ListView.builder(
         itemCount: notifications.length,
         itemBuilder: (context, index) {
-          final notificationDay = notifications[index];
+          final notification = notifications[index];
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.0.w),
             child: Column(
@@ -97,7 +40,7 @@ class NotificationScreen extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  notificationDay['day'],
+                  notification.day,
                   style: kHeading.copyWith(
                     fontSize: 15.sp,
                     color: const Color(0xffbdbdbd),
@@ -106,8 +49,8 @@ class NotificationScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 5.0),
                   child: Column(
-                    children: (notificationDay['notifications']
-                            as List<Map<String, dynamic>>)
+                    children: notifications
+                        .where((item) => item.day == notification.day)
                         .map(
                       (notification) {
                         return ListTile(
@@ -118,9 +61,8 @@ class NotificationScreen extends StatelessWidget {
                             child: Row(
                               children: [
                                 CircleAvatar(
-                                  backgroundImage: AssetImage(
-                                    notification['person']['image'],
-                                  ),
+                                  backgroundImage:
+                                      AssetImage(notification.imageURL),
                                   radius: 35.r,
                                 ),
                                 SizedBox(
@@ -135,28 +77,29 @@ class NotificationScreen extends StatelessWidget {
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                         text: TextSpan(
-                                          text:
-                                              '${notification['person']['name']}',
+                                          text: notification.name,
                                           style: kText1.copyWith(
-                                              color: const Color(0xff48525B),
-                                              fontSize: 14.sp),
+                                            color: const Color(0xff48525B),
+                                            fontSize: 14.sp,
+                                          ),
                                           children: <TextSpan>[
                                             TextSpan(
                                               text:
-                                                  ', ${notification['description']}',
+                                                  ', ${notification.notificationText}',
                                               style: kText2.copyWith(
-                                                  color:
-                                                      const Color(0xff48525B),
-                                                  fontSize: 14.sp),
+                                                color: const Color(0xff48525B),
+                                                fontSize: 14.sp,
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ),
                                       Text(
-                                        notification['time'],
+                                        notification.time,
                                         style: kText2.copyWith(
-                                            color: const Color(0xffAFAFAF),
-                                            fontSize: 12.sp),
+                                          color: const Color(0xffAFAFAF),
+                                          fontSize: 12.sp,
+                                        ),
                                       ),
                                     ],
                                   ),

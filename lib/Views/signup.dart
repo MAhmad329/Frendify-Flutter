@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/Controllers/auth.dart';
+import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 import '../widgets/custom_rich_text.dart';
 
@@ -81,11 +82,7 @@ class Signup extends StatelessWidget {
                           buttonHeight: 50,
                           onTap: () async {
                             try {
-                              await FirebaseAuth.instance
-                                  .createUserWithEmailAndPassword(
-                                email: email,
-                                password: pass,
-                              );
+                              await Auth().signUp(email: email, password: pass);
                               if (context.mounted) {
                                 Navigator.popAndPushNamed(
                                     context, 'login_screen');

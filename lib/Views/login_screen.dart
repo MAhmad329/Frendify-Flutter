@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/Controllers/auth.dart';
+import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 import '../widgets/custom_rich_text.dart';
 import 'forgetpassword.dart';
@@ -15,7 +16,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String error = '';
@@ -142,11 +142,11 @@ class _LoginState extends State<Login> {
                                     showSpinner = true;
                                   },
                                 );
-                                await _firebaseAuth.signInWithEmailAndPassword(
+                                await Auth().signIn(
                                     email: _emailController.text,
                                     password: _passwordController.text);
 
-                                if (context.mounted) {
+                                if (mounted) {
                                   Navigator.popAndPushNamed(
                                       context, 'home_screen');
                                 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../Models/chats_model.dart';
 import '../widgets/chat_list.dart';
-import '../widgets/chats.dart';
 import '../widgets/search_bar.dart';
 
 class Chats extends StatefulWidget {

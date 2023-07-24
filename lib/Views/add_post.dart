@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:frendify/widgets/button.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/constants.dart';
 
 import '../widgets/post_options.dart';
 
@@ -14,7 +14,6 @@ class AddPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.sizeOf(context).height;
     return SafeArea(
         child: Scaffold(
       resizeToAvoidBottomInset: false,

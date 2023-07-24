@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:frendify/widgets/button.dart';
 import 'package:frendify/widgets/post.dart';
 import '../widgets/profile_info.dart';
 
-class MyProfileScreen extends StatelessWidget {
-  const MyProfileScreen({Key? key}) : super(key: key);
+class UsersProfileScreen extends StatelessWidget {
+  const UsersProfileScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       initialIndex: 0,
       child: SafeArea(
         child: Scaffold(
@@ -27,7 +28,7 @@ class MyProfileScreen extends StatelessWidget {
                 Navigator.of(context).pop();
               },
             ),
-            title: const Text('Alex Johns'),
+            title: const Text('Ahmad'),
             actions: [
               IconButton(
                 onPressed: () {},
@@ -37,14 +38,41 @@ class MyProfileScreen extends StatelessWidget {
           ),
           body: Column(
             children: [
-              const ProfileInfo(
-                name: 'alex_jhons',
-                following: '180',
-                followers: '1.2k',
-                sales: '120',
-              ),
+              const ProfileInfo(),
               SizedBox(
                 height: 15.h,
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  MyButton(
+                    buttonText: 'Follow',
+                    buttonColor: const Color(0xFF987EFF),
+                    buttonWidth: 110.w,
+                    buttonHeight: 30.h,
+                  ),
+                  SizedBox(
+                    width: 20.w,
+                  ),
+                  MyButton(
+                      buttonText: 'Follow',
+                      buttonColor: Colors.white,
+                      borderColor: const Color(0xFF987EFF),
+                      textColor: const Color(0xFF987EFF),
+                      buttonWidth: 80.w,
+                      buttonHeight: 30.h),
+                  SizedBox(
+                    width: 20.w,
+                  ),
+                  MyButton(
+                      buttonText: 'Follow',
+                      buttonColor: Colors.white,
+                      borderColor: const Color(0xFF987EFF),
+                      textColor: const Color(0xFF987EFF),
+                      buttonWidth: 80.w,
+                      buttonHeight: 30.h),
+                ],
               ),
               Padding(
                 padding:
@@ -68,12 +96,6 @@ class MyProfileScreen extends StatelessWidget {
                         Tab(
                           icon: Icon(
                             Icons.view_headline_sharp,
-                            size: 20.r,
-                          ),
-                        ),
-                        Tab(
-                          icon: Icon(
-                            Icons.bookmark_border,
                             size: 20.r,
                           ),
                         ),

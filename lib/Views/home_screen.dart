@@ -2,15 +2,13 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:image_picker/image_picker.dart';
-import 'package:frendify/screens/settings_screen.dart';
-import '../widgets/constants.dart';
+import 'package:frendify/Views/settings_screen.dart';
+import '../constants.dart';
 import 'add_post.dart';
 import 'chats_screen.dart';
 import 'explore_screen.dart';
 import 'feed_screen.dart';
-import 'package:lazy_load_indexed_stack/lazy_load_indexed_stack.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,6 +18,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final screens = const [
+    FeedScreen(),
+    ExploreScreen(),
+    Chats(),
+    SettingsScreen(),
+  ];
   XFile? imageFile;
 
   final iconList = <IconData>[
@@ -195,15 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
               notchMargin: 10.r,
             )
           : null,
-      body: LazyLoadIndexedStack(
-        index: _bottomNavIndex,
-        children: const [
-          FeedScreen(),
-          ExploreScreen(),
-          Chats(),
-          SettingsScreen(),
-        ],
-      ),
+      body: screens[_bottomNavIndex],
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/screens/notification_screen.dart';
-import 'package:frendify/screens/myprofile_screen.dart';
+import 'package:frendify/Views/notification_screen.dart';
+import 'package:frendify/Views/myprofile_screen.dart';
 import '../widgets/post.dart';
 
 class FeedScreen extends StatelessWidget {

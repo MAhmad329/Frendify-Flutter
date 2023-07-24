@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/widgets/constants.dart';
-import 'package:frendify/screens/login_screen.dart';
-import 'package:frendify/screens/signup.dart';
+import 'package:frendify/constants.dart';
+import 'package:frendify/Views/login_screen.dart';
+import 'package:frendify/Views/signup.dart';
 
 class CustomRichText extends StatelessWidget {
   const CustomRichText({

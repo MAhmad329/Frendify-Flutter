@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:frendify/Models/profile_model.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({
     super.key,
-    required this.name,
-    required this.following,
-    required this.followers,
-    required this.sales,
   });
-
-  final String name;
-  final String following;
-  final String followers;
-  final String sales;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +31,7 @@ class ProfileInfo extends StatelessWidget {
                     height: 5.h,
                   ),
                   Text(
-                    '@$name',
+                    '@${profileUser.name}',
                     style: kText1.copyWith(
                         fontSize: 18.sp, color: const Color(0xffACACAC)),
                   ),
@@ -57,7 +49,7 @@ class ProfileInfo extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      following,
+                      profileUser.following,
                       style: kText1.copyWith(
                         fontSize: 20.sp,
                       ),
@@ -76,7 +68,7 @@ class ProfileInfo extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      followers,
+                      profileUser.followers,
                       style: kText1.copyWith(
                         fontSize: 20.sp,
                       ),
@@ -88,25 +80,6 @@ class ProfileInfo extends StatelessWidget {
                         color: const Color(0xffBDBDBD),
                       ),
                     )
-                  ],
-                ),
-              ),
-              InkWell(
-                child: Column(
-                  children: [
-                    Text(
-                      sales,
-                      style: kText1.copyWith(
-                        fontSize: 20.sp,
-                      ),
-                    ),
-                    Text(
-                      'Sales',
-                      style: kHeading.copyWith(
-                        fontSize: 15.sp,
-                        color: const Color(0xffBDBDBD),
-                      ),
-                    ),
                   ],
                 ),
               ),

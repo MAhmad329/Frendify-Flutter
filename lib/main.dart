@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frendify/screens/home_screen.dart';
-import 'package:frendify/screens/login_screen.dart';
+import 'package:frendify/Views/home_screen.dart';
+import 'package:frendify/Views/login_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/screens/feed_screen.dart';
+import 'package:frendify/Views/feed_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 

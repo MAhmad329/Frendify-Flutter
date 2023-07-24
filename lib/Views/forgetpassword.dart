@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/screens/email_verification.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/Views/email_verification.dart';
+import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 import 'package:frendify/widgets/text_field.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/screens/chatdetails_screen.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/Views/chatdetails_screen.dart';
+import 'package:frendify/constants.dart';
 
 class ConversationList extends StatefulWidget {
   const ConversationList(

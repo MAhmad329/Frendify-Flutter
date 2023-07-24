@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/widgets/constants.dart';
+import 'package:frendify/constants.dart';
 
 class ChatBubble extends StatelessWidget {
   const ChatBubble({Key? key, required this.text, required this.isCurrentUser})
