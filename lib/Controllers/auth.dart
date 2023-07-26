@@ -22,4 +22,8 @@ class Auth {
     final user = Auth().currentUser!;
     await user.sendEmailVerification();
   }
+
+  Future<void> resetPassword({required String email}) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
 }

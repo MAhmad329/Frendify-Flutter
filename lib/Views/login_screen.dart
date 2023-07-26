@@ -5,7 +5,6 @@ import 'package:frendify/Controllers/auth.dart';
 import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 import '../widgets/custom_rich_text.dart';
-import 'forgetpassword.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -46,13 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
           const SnackBar(
             content: Center(
               child: Text(
-                  'Failed to connect to Firebase. Please check your network.'),
+                  'Failed To Connect To Internet. Please Check Your Connection!.'),
             ),
             duration: Duration(seconds: 3),
           ),
         );
       } else {
-        error = 'Email or Password does not match!';
+        error = 'Email Or Password Does Not Match!';
         _validated = false;
       }
     }
@@ -123,11 +122,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 : Alignment.centerRight,
                             child: InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ForgetPassword()));
+                                  Navigator.pushNamed(
+                                      context, 'forget_password_screen');
                                 },
                                 child: Text('Forgot Your Password?',
                                     style: kBasicText)),

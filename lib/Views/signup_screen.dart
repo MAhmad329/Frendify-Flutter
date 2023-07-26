@@ -41,7 +41,7 @@ class _SignupState extends State<Signup> {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Your account has been created successfully.'),
+              content: Text('Your Account Has Been Created Successfully.'),
               duration: Duration(seconds: 3),
             ),
           );
@@ -49,20 +49,20 @@ class _SignupState extends State<Signup> {
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
-          error = 'Email already exists';
+          error = 'Email Already Exists';
           _emailValidated = false;
         } else if (e.code == 'invalid-email') {
-          error = 'Invalid email format!';
+          error = 'Invalid Email Format!';
           _emailValidated = false;
         } else if (e.code == 'weak-password') {
-          error = 'Weak password. Try another one!';
+          error = 'Weak Password. Try Another One!';
           _passwordValidated = false;
         } else if (_emailController.text.isEmpty) {
-          error = 'Email cannot be empty!';
+          error = 'Email Cannot Be Empty!';
           _emailValidated = false;
         } else if (_passwordController.text.isEmpty ||
             _confirmPasswordController.text.isEmpty) {
-          error = 'Password cannot be empty!';
+          error = 'Password Cannot Be Empty!';
           _passwordValidated = false;
           _confirmPasswordValidated = false;
         } else if (e.code == 'network-request-failed') {
@@ -80,7 +80,7 @@ class _SignupState extends State<Signup> {
         }
       }
     } else {
-      error = 'Passwords do not match!';
+      error = 'Passwords Don\'t Match!';
       _passwordValidated = false;
       _confirmPasswordValidated = false;
     }
