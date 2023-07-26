@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/Views/email_verification.dart';
+import 'package:frendify/Views/pin_verification_screen.dart';
 import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 import 'package:frendify/widgets/text_field.dart';
@@ -56,7 +56,7 @@ class ForgetPassword extends StatelessWidget {
                   ),
                   MyButton(
                     buttonText: 'Send OTP',
-                    buttonColor: const Color(0xFF987EFF),
+                    buttonColor: primaryColor,
                     buttonWidth: 350,
                     buttonHeight: 50,
                     onTap: () => Navigator.push(

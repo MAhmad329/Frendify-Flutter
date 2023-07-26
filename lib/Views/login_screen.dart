@@ -8,19 +8,56 @@ import '../widgets/custom_rich_text.dart';
 import 'forgetpassword.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String error = '';
   bool _validated = true;
   bool showSpinner = false;
+
+  Future<void> authenticateLogin() async {
+    try {
+      setState(
+        () {
+          _validated = true;
+          showSpinner = true;
+        },
+      );
+      await Auth().signIn(
+          email: _emailController.text, password: _passwordController.text);
+
+      if (mounted) {
+        if (Auth().currentUser!.emailVerified) {
+          Navigator.popAndPushNamed(context, 'home_screen');
+        } else {
+          Navigator.popAndPushNamed(context, 'email_verification_screen');
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'network-request-failed') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(
+              child: Text(
+                  'Failed to connect to Firebase. Please check your network.'),
+            ),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      } else {
+        error = 'Email or Password does not match!';
+        _validated = false;
+      }
+    }
+    setState(() => showSpinner = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,47 +137,10 @@ class _LoginState extends State<Login> {
                           ),
                           MyButton(
                             buttonText: 'Sign in',
-                            buttonColor: const Color(0xFF987EFF),
+                            buttonColor: primaryColor,
                             buttonWidth: 350,
                             buttonHeight: 50,
-                            onTap: () async {
-                              try {
-                                setState(
-                                  () {
-                                    _validated = true;
-                                    showSpinner = true;
-                                  },
-                                );
-                                await Auth().signIn(
-                                    email: _emailController.text,
-                                    password: _passwordController.text);
-
-                                if (mounted) {
-                                  Navigator.popAndPushNamed(
-                                      context, 'home_screen');
-                                }
-                              } on FirebaseAuthException catch (e) {
-                                if (e.code == 'network-request-failed') {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Center(
-                                        child: Text(
-                                            'Failed to connect to Firebase. Please check your network.'),
-                                      ),
-                                      duration: Duration(seconds: 3),
-                                    ),
-                                  );
-                                } else {
-                                  error = 'Email or Password does not match!';
-                                  _validated = false;
-                                }
-                              }
-                              setState(
-                                () {
-                                  showSpinner = false;
-                                },
-                              );
-                            },
+                            onTap: authenticateLogin,
                           ),
                         ],
                       ),

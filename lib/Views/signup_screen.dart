@@ -17,9 +17,79 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   String error = '';
-  bool _validated = true;
+  bool _emailValidated = true;
+  bool _passwordValidated = true;
+  bool _confirmPasswordValidated = true;
   bool showSpinner = false;
+
+  Future<void> authenticateSignup() async {
+    setState(
+      () {
+        _emailValidated = true;
+        _passwordValidated = true;
+        _confirmPasswordValidated = true;
+        showSpinner = true;
+      },
+    );
+    if (_passwordController.text == _confirmPasswordController.text) {
+      try {
+        await Auth().signUp(
+            email: _emailController.text, password: _passwordController.text);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Your account has been created successfully.'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+          Navigator.popAndPushNamed(context, 'email_verification_screen');
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'email-already-in-use') {
+          error = 'Email already exists';
+          _emailValidated = false;
+        } else if (e.code == 'invalid-email') {
+          error = 'Invalid email format!';
+          _emailValidated = false;
+        } else if (e.code == 'weak-password') {
+          error = 'Weak password. Try another one!';
+          _passwordValidated = false;
+        } else if (_emailController.text.isEmpty) {
+          error = 'Email cannot be empty!';
+          _emailValidated = false;
+        } else if (_passwordController.text.isEmpty ||
+            _confirmPasswordController.text.isEmpty) {
+          error = 'Password cannot be empty!';
+          _passwordValidated = false;
+          _confirmPasswordValidated = false;
+        } else if (e.code == 'network-request-failed') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Center(child: Text('No Internet Connection!')),
+              duration: Duration(seconds: 5),
+            ),
+          );
+        } else {
+          error = 'Undefined Error';
+          _emailValidated = false;
+          _passwordValidated = false;
+          _confirmPasswordValidated = false;
+        }
+      }
+    } else {
+      error = 'Passwords do not match!';
+      _passwordValidated = false;
+      _confirmPasswordValidated = false;
+    }
+    setState(
+      () {
+        showSpinner = false;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +123,8 @@ class _SignupState extends State<Signup> {
                             style: kText1.copyWith(fontSize: 20.sp),
                           ),
                           SizedBox(
-                            height: 40.h,
+                            height: 20.h,
                           ),
-                          // const CustomTf(hintText: 'Username'),
-                          // SizedBox(
-                          //   height: 12.h,
-                          // ),
                           TextField(
                             controller: _emailController,
                             decoration: kTextFieldDecoration.copyWith(
@@ -78,8 +144,7 @@ class _SignupState extends State<Signup> {
                                     color: Colors.red,
                                   ),
                                 ),
-                                errorText: _validated ? null : '',
-                                errorStyle: TextStyle(height: 0.h),
+                                errorText: _emailValidated ? null : error,
                                 hintText: 'Email'),
                           ),
                           SizedBox(
@@ -105,78 +170,47 @@ class _SignupState extends State<Signup> {
                                   color: Colors.red,
                                 ),
                               ),
-                              errorText: _validated ? null : error,
+                              errorText: _passwordValidated ? null : error,
                               hintText: 'Password',
                             ),
                           ),
                           SizedBox(
                             height: 12.h,
                           ),
-                          // const CustomTf(
-                          //   hintText: 'Confirm Password',
-                          //   obsText: true,
-                          // ),
+                          TextField(
+                            controller: _confirmPasswordController,
+                            obscureText: true,
+                            decoration: kTextFieldDecoration.copyWith(
+                              errorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.r)),
+                                borderSide: const BorderSide(
+                                  width: 2,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(32.r)),
+                                borderSide: const BorderSide(
+                                  width: 2,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              errorText:
+                                  _confirmPasswordValidated ? null : error,
+                              hintText: 'Confirm Password',
+                            ),
+                          ),
                           SizedBox(
                             height: 33.h,
                           ),
                           MyButton(
                             buttonText: 'Sign Up',
-                            buttonColor: const Color(0xFF987EFF),
+                            buttonColor: primaryColor,
                             buttonWidth: 350,
                             buttonHeight: 50,
-                            onTap: () async {
-                              try {
-                                setState(
-                                  () {
-                                    _validated = true;
-                                    showSpinner = true;
-                                  },
-                                );
-                                await Auth().signUp(
-                                    email: _emailController.text,
-                                    password: _passwordController.text);
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Your account has been created successfully.'),
-                                      duration: Duration(seconds: 3),
-                                    ),
-                                  );
-                                  Navigator.popAndPushNamed(
-                                      context, 'login_screen');
-                                }
-                              } on FirebaseAuthException catch (e) {
-                                if (e.code == 'email-already-in-use') {
-                                  error = 'Email already exists';
-                                  _validated = false;
-                                } else if (e.code == 'weak-password') {
-                                  error = 'Weak password. Try another one!';
-                                  _validated = false;
-                                } else if (_emailController.text.isEmpty ||
-                                    _passwordController.text.isEmpty) {
-                                  error = 'One or more fields are empty!';
-                                  _validated = false;
-                                } else if (e.code == 'network-request-failed') {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Center(
-                                          child:
-                                              Text('No Internet Connection!')),
-                                      duration: Duration(seconds: 5),
-                                    ),
-                                  );
-                                } else {
-                                  error = 'Invalid email format';
-                                  _validated = false;
-                                }
-                              }
-                              setState(
-                                () {
-                                  showSpinner = false;
-                                },
-                              );
-                            },
+                            onTap: authenticateSignup,
                           ),
                         ],
                       ),

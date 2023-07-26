@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+Color primaryColor = const Color(0xFF987EFF);
+
 TextStyle kBasicText =
     TextStyle(color: Colors.black, fontSize: 12.sp, fontFamily: 'Poppins');
 TextStyle kHeading = TextStyle(

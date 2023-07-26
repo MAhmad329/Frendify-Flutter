@@ -101,7 +101,7 @@ class AddPost extends StatelessWidget {
                   ),
                   MyButton(
                     buttonText: 'Post',
-                    buttonColor: const Color(0xFF987EFF),
+                    buttonColor: primaryColor,
                     buttonWidth: 160.w,
                     buttonHeight: 50,
                   ),

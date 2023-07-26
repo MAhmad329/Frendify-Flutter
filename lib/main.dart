@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frendify/Views/email_verification_screen.dart';
+import 'package:frendify/Views/forgetpassword.dart';
 import 'package:frendify/Views/home_screen.dart';
 import 'package:frendify/Views/login_screen.dart';
 import 'package:flutter/services.dart';
@@ -33,9 +35,12 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             initialRoute: 'login_screen',
             routes: {
-              'login_screen': (context) => Login(),
+              'login_screen': (context) => const LoginScreen(),
               'feed_screen': (context) => const FeedScreen(),
               'home_screen': (context) => const HomeScreen(),
+              'email_verification_screen': (context) =>
+                  const EmailVerificationScreen(),
+              'forget_password_screen': (context) => const ForgetPassword(),
             },
           );
         });

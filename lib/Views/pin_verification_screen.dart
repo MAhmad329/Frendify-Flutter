@@ -57,7 +57,7 @@ class EmailVerification extends StatelessWidget {
                   ),
                   MyButton(
                     buttonText: 'Verify',
-                    buttonColor: const Color(0xFF987EFF),
+                    buttonColor: primaryColor,
                     buttonWidth: 350,
                     buttonHeight: 50,
                     onTap: () => Navigator.push(

@@ -179,7 +179,7 @@ class ChatDetailsScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(bottom: 5.0.h),
                         child: CircleAvatar(
-                          backgroundColor: const Color(0xFF987EFF),
+                          backgroundColor: primaryColor,
                           maxRadius: 20.r,
                           child: Icon(
                             Icons.send,

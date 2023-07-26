@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/widgets/post.dart';
+import '../constants.dart';
 import '../widgets/profile_info.dart';
 
 class MyProfileScreen extends StatelessWidget {
@@ -50,9 +51,9 @@ class MyProfileScreen extends StatelessWidget {
                     elevation: 0,
                     backgroundColor: Colors.white,
                     bottom: TabBar(
-                      indicatorColor: const Color(0xFF987EFF),
+                      indicatorColor: primaryColor,
                       unselectedLabelColor: const Color(0xffbdbdbd),
-                      labelColor: const Color(0xFF987EFF),
+                      labelColor: primaryColor,
                       tabs: [
                         Tab(
                           icon: Icon(

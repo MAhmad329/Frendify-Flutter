@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/Views/notification_screen.dart';
 import 'package:frendify/Views/myprofile_screen.dart';
+import '../constants.dart';
 import '../widgets/post.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -55,12 +56,11 @@ class FeedScreen extends StatelessWidget {
             child: TabBar(
               unselectedLabelStyle: TextStyle(fontSize: 14.sp),
               indicator: UnderlineTabIndicator(
-                borderSide:
-                    BorderSide(width: 1.5.w, color: const Color(0xFF987EFF)),
+                borderSide: BorderSide(width: 1.5.w, color: primaryColor),
                 insets: EdgeInsets.symmetric(horizontal: 25.w, vertical: 15.h),
               ),
               indicatorWeight: 2.w,
-              labelColor: const Color(0xFF987EFF),
+              labelColor: primaryColor,
               unselectedLabelColor: Colors.grey,
               splashFactory: NoSplash.splashFactory,
               labelStyle: TextStyle(fontSize: 14.sp),

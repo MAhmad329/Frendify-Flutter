@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/widgets/button.dart';
 import 'package:frendify/widgets/post.dart';
+import '../constants.dart';
 import '../widgets/profile_info.dart';
 
 class UsersProfileScreen extends StatelessWidget {
@@ -48,7 +49,7 @@ class UsersProfileScreen extends StatelessWidget {
                 children: [
                   MyButton(
                     buttonText: 'Follow',
-                    buttonColor: const Color(0xFF987EFF),
+                    buttonColor: primaryColor,
                     buttonWidth: 110.w,
                     buttonHeight: 30.h,
                   ),
@@ -58,8 +59,8 @@ class UsersProfileScreen extends StatelessWidget {
                   MyButton(
                       buttonText: 'Follow',
                       buttonColor: Colors.white,
-                      borderColor: const Color(0xFF987EFF),
-                      textColor: const Color(0xFF987EFF),
+                      borderColor: primaryColor,
+                      textColor: primaryColor,
                       buttonWidth: 80.w,
                       buttonHeight: 30.h),
                   SizedBox(
@@ -68,8 +69,8 @@ class UsersProfileScreen extends StatelessWidget {
                   MyButton(
                       buttonText: 'Follow',
                       buttonColor: Colors.white,
-                      borderColor: const Color(0xFF987EFF),
-                      textColor: const Color(0xFF987EFF),
+                      borderColor: primaryColor,
+                      textColor: primaryColor,
                       buttonWidth: 80.w,
                       buttonHeight: 30.h),
                 ],
@@ -83,9 +84,9 @@ class UsersProfileScreen extends StatelessWidget {
                     elevation: 0,
                     backgroundColor: Colors.white,
                     bottom: TabBar(
-                      indicatorColor: const Color(0xFF987EFF),
+                      indicatorColor: primaryColor,
                       unselectedLabelColor: const Color(0xffbdbdbd),
-                      labelColor: const Color(0xFF987EFF),
+                      labelColor: primaryColor,
                       tabs: [
                         Tab(
                           icon: Icon(

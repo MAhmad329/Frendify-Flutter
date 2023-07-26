@@ -27,8 +27,8 @@ class CustomRichText extends StatelessWidget {
               context, MaterialPageRoute(builder: (context) => const Signup()));
       } else if (currentScreen == 'signup') {
         return TapGestureRecognizer()
-          ..onTap = () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const Login()));
+          ..onTap = () => Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()));
       } else {
         return TapGestureRecognizer();
       }

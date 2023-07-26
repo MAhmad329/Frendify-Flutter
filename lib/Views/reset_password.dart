@@ -63,9 +63,9 @@ class ResetPassword extends StatelessWidget {
                   SizedBox(
                     height: 20.h,
                   ),
-                  const MyButton(
+                  MyButton(
                     buttonText: 'Reset Password',
-                    buttonColor: Color(0xFF987EFF),
+                    buttonColor: primaryColor,
                     buttonWidth: 350,
                     buttonHeight: 50,
                   ),

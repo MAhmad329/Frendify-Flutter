@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Icons.chat_bubble_outline,
     Icons.settings,
   ];
-  Color activeNavigationBarColor = const Color(0xFF987EFF);
+  Color activeNavigationBarColor = primaryColor;
   Color inactiveNavigationBarColor = Colors.grey;
 
   int _bottomNavIndex = 0;
@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 56.w,
           child: FittedBox(
             child: FloatingActionButton(
-              backgroundColor: const Color(0xFF987EFF),
+              backgroundColor: primaryColor,
               onPressed: () {
                 showModalBottomSheet(
                   showDragHandle: true,
