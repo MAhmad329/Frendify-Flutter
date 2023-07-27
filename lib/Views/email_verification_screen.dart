@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/Controllers/auth.dart';
 import 'package:frendify/Views/home_screen.dart';
+
 import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 
@@ -38,18 +39,20 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       try {
         await Auth().sendVerificationEmail();
         setState(() => canResendEmail = false);
-        await Future.delayed(
-          const Duration(seconds: 30),
-        );
-        setState(() => canResendEmail = true);
+        await Future.delayed(const Duration(seconds: 30));
+        if (mounted) {
+          setState(() => canResendEmail = true);
+        }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              e.toString(),
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                e.toString(),
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
 
       timer = Timer.periodic(
@@ -60,13 +63,18 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   Future<void> checkEmailVerified() async {
-    await Auth().currentUser!.reload();
-    setState(() {
-      isEmailVerified = Auth().currentUser!.emailVerified;
-    });
+    final currentUser = Auth().currentUser;
+    if (currentUser != null) {
+      await currentUser.reload();
+      if (mounted) {
+        setState(() {
+          isEmailVerified = currentUser.emailVerified;
+        });
 
-    if (isEmailVerified) {
-      timer?.cancel();
+        if (isEmailVerified) {
+          timer?.cancel();
+        }
+      }
     }
   }
 

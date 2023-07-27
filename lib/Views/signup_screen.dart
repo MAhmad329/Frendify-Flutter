@@ -19,76 +19,102 @@ class _SignupState extends State<Signup> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   String error = '';
   bool _emailValidated = true;
   bool _passwordValidated = true;
   bool _confirmPasswordValidated = true;
+  bool _usernameValidated = true;
   bool showSpinner = false;
 
   Future<void> authenticateSignup() async {
-    setState(
-      () {
-        _emailValidated = true;
-        _passwordValidated = true;
-        _confirmPasswordValidated = true;
-        showSpinner = true;
-      },
-    );
-    if (_passwordController.text == _confirmPasswordController.text) {
-      try {
-        await Auth().signUp(
-            email: _emailController.text, password: _passwordController.text);
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Your Account Has Been Created Successfully.'),
-              duration: Duration(seconds: 3),
-            ),
-          );
-          Navigator.popAndPushNamed(context, 'email_verification_screen');
-        }
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'email-already-in-use') {
-          error = 'Email Already Exists';
-          _emailValidated = false;
-        } else if (e.code == 'invalid-email') {
-          error = 'Invalid Email Format!';
-          _emailValidated = false;
-        } else if (e.code == 'weak-password') {
-          error = 'Weak Password. Try Another One!';
-          _passwordValidated = false;
-        } else if (_emailController.text.isEmpty) {
-          error = 'Email Cannot Be Empty!';
-          _emailValidated = false;
-        } else if (_passwordController.text.isEmpty ||
-            _confirmPasswordController.text.isEmpty) {
-          error = 'Password Cannot Be Empty!';
-          _passwordValidated = false;
-          _confirmPasswordValidated = false;
-        } else if (e.code == 'network-request-failed') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Center(child: Text('No Internet Connection!')),
-              duration: Duration(seconds: 5),
-            ),
-          );
-        } else {
-          error = 'Undefined Error';
-          _emailValidated = false;
-          _passwordValidated = false;
-          _confirmPasswordValidated = false;
-        }
-      }
-    } else {
+    setState(() {
+      _emailValidated = true;
+      _passwordValidated = true;
+      _confirmPasswordValidated = true;
+      _usernameValidated = true;
+      showSpinner = true;
+    });
+
+    if (_passwordController.text != _confirmPasswordController.text) {
       error = 'Passwords Don\'t Match!';
       _passwordValidated = false;
       _confirmPasswordValidated = false;
+    } else if (_emailController.text.isEmpty) {
+      error = 'Email Cannot Be Empty!';
+      _emailValidated = false;
+    } else if (_usernameController.text.isEmpty) {
+      error = 'Username cannot be empty!';
+      _usernameValidated = false;
+    } else if (_passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty) {
+      error = 'Password Cannot Be Empty!';
+      _passwordValidated = false;
+      _confirmPasswordValidated = false;
+    } else {
+      try {
+        final available =
+            await Auth().checkUsernameAvailability(_usernameController.text);
+        if (available == true) {
+          await signUpWithEmailAndPassword();
+        } else {
+          error = 'Username already taken!';
+          _usernameValidated = false;
+        }
+      } on FirebaseAuthException catch (e) {
+        handleAuthException(e);
+      }
     }
-    setState(
-      () {
-        showSpinner = false;
-      },
-    );
+    setState(() => showSpinner = false);
+  }
+
+  Future<void> signUpWithEmailAndPassword() async {
+    try {
+      await Auth().signUp(
+        email: _emailController.text,
+        password: _passwordController.text,
+        username: _usernameController.text,
+      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Your Account Has Been Created Successfully.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+        Navigator.popAndPushNamed(context, 'email_verification_screen');
+      }
+    } on FirebaseAuthException catch (e) {
+      handleAuthException(e);
+    }
+  }
+
+  void handleAuthException(FirebaseAuthException e) {
+    setState(() {
+      if (e.code == 'email-already-in-use') {
+        error = 'Email Already Exists';
+        _emailValidated = false;
+      } else if (e.code == 'invalid-email') {
+        error = 'Invalid Email Format!';
+        _emailValidated = false;
+      } else if (e.code == 'weak-password') {
+        error = 'Weak Password. Try Another One!';
+        _passwordValidated = false;
+      } else if (e.code == 'network-request-failed') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(child: Text('No Internet Connection!')),
+            duration: Duration(seconds: 5),
+          ),
+        );
+      } else {
+        error = 'Undefined Error';
+        _emailValidated = false;
+        _passwordValidated = false;
+        _confirmPasswordValidated = false;
+        _usernameValidated = false;
+      }
+    });
   }
 
   @override
@@ -126,24 +152,17 @@ class _SignupState extends State<Signup> {
                             height: 20.h,
                           ),
                           TextField(
+                            controller: _usernameController,
+                            decoration: kTextFieldDecoration.copyWith(
+                                errorText: _usernameValidated ? null : error,
+                                hintText: 'Username'),
+                          ),
+                          SizedBox(
+                            height: 12.h,
+                          ),
+                          TextField(
                             controller: _emailController,
                             decoration: kTextFieldDecoration.copyWith(
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(32.r)),
-                                  borderSide: const BorderSide(
-                                    width: 2,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(32.r)),
-                                  borderSide: const BorderSide(
-                                    width: 2,
-                                    color: Colors.red,
-                                  ),
-                                ),
                                 errorText: _emailValidated ? null : error,
                                 hintText: 'Email'),
                           ),
@@ -154,22 +173,6 @@ class _SignupState extends State<Signup> {
                             controller: _passwordController,
                             obscureText: true,
                             decoration: kTextFieldDecoration.copyWith(
-                              errorBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(32.r)),
-                                borderSide: const BorderSide(
-                                  width: 2,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(32.r)),
-                                borderSide: const BorderSide(
-                                  width: 2,
-                                  color: Colors.red,
-                                ),
-                              ),
                               errorText: _passwordValidated ? null : error,
                               hintText: 'Password',
                             ),
@@ -181,22 +184,6 @@ class _SignupState extends State<Signup> {
                             controller: _confirmPasswordController,
                             obscureText: true,
                             decoration: kTextFieldDecoration.copyWith(
-                              errorBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(32.r)),
-                                borderSide: const BorderSide(
-                                  width: 2,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(32.r)),
-                                borderSide: const BorderSide(
-                                  width: 2,
-                                  color: Colors.red,
-                                ),
-                              ),
                               errorText:
                                   _confirmPasswordValidated ? null : error,
                               hintText: 'Confirm Password',
