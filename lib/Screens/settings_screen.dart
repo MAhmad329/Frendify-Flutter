@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/Controllers/auth.dart';
+import 'package:frendify/Authentication/auth.dart';
 import 'package:frendify/constants.dart';
 
 class SettingsScreen extends StatelessWidget {

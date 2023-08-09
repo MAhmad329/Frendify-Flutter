@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/widgets/chat_bubble.dart';
 import 'package:frendify/constants.dart';
+import 'package:frendify/widgets/text_input.dart';
 
 class ChatDetailsScreen extends StatelessWidget {
   const ChatDetailsScreen({Key? key}) : super(key: key);
@@ -140,57 +141,10 @@ class ChatDetailsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 5.0.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          keyboardType: TextInputType.multiline,
-                          minLines: 1,
-                          maxLines: 6,
-                          decoration: InputDecoration(
-                            hintText: "Type your message here...",
-                            hintStyle: const TextStyle(
-                              color: Color(0xFFBDBDBD),
-                            ),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.r),
-                                borderSide: BorderSide.none),
-                            fillColor: const Color(0xFFF1F1F1),
-                            filled: true,
-                            suffixIcon: IconButton(
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.camera_alt_outlined,
-                                color: Color(0xFFBDBDBD),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5.0.h),
-                        child: CircleAvatar(
-                          backgroundColor: primaryColor,
-                          maxRadius: 20.r,
-                          child: Icon(
-                            Icons.send,
-                            size: 15.r,
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+                CustomTextInput(
+                  hintText: 'Type your message here...',
+                  onSubmitted: (value) {},
+                )
               ],
             ),
           ),

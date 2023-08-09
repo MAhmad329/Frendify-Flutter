@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/Controllers/auth.dart';
+import 'package:frendify/Authentication/auth.dart';
 import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,6 +38,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: ModalProgressHUD(
+          color: primaryColor,
           inAsyncCall: showSpinner,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 30.w),
@@ -83,8 +84,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             _validated = true;
                             showSpinner = true;
                           });
-                          await Auth()
-                              .resetPassword(email: _emailController.text);
+                          await Auth().resetPassword(
+                            email: _emailController.text.trim(),
+                          );
                           if (context.mounted) {
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(

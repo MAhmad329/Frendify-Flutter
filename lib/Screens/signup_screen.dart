@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/Controllers/auth.dart';
+import 'package:frendify/Authentication/auth.dart';
 import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 import '../widgets/custom_rich_text.dart';
@@ -20,12 +20,19 @@ class _SignupState extends State<Signup> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   String error = '';
   bool _emailValidated = true;
   bool _passwordValidated = true;
   bool _confirmPasswordValidated = true;
   bool _usernameValidated = true;
+  bool _nameValidated = true;
   bool showSpinner = false;
+
+  bool _isUsernameValid(String username) {
+    final RegExp validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
+    return validCharacters.hasMatch(username);
+  }
 
   Future<void> authenticateSignup() async {
     setState(() {
@@ -33,6 +40,7 @@ class _SignupState extends State<Signup> {
       _passwordValidated = true;
       _confirmPasswordValidated = true;
       _usernameValidated = true;
+      _nameValidated = true;
       showSpinner = true;
     });
 
@@ -40,6 +48,9 @@ class _SignupState extends State<Signup> {
       error = 'Passwords Don\'t Match!';
       _passwordValidated = false;
       _confirmPasswordValidated = false;
+    } else if (_nameController.text.isEmpty) {
+      error = 'Name Cannot Be Empty!';
+      _nameValidated = false;
     } else if (_emailController.text.isEmpty) {
       error = 'Email Cannot Be Empty!';
       _emailValidated = false;
@@ -51,6 +62,9 @@ class _SignupState extends State<Signup> {
       error = 'Password Cannot Be Empty!';
       _passwordValidated = false;
       _confirmPasswordValidated = false;
+    } else if (!_isUsernameValid(_usernameController.text)) {
+      error = 'Only letters and numbers are allowed.';
+      _usernameValidated = false;
     } else {
       try {
         final available =
@@ -71,9 +85,10 @@ class _SignupState extends State<Signup> {
   Future<void> signUpWithEmailAndPassword() async {
     try {
       await Auth().signUp(
-        email: _emailController.text,
+        email: _emailController.text.trim(),
         password: _passwordController.text,
         username: _usernameController.text,
+        name: _nameController.text.trim(),
       );
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -124,6 +139,7 @@ class _SignupState extends State<Signup> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: ModalProgressHUD(
+          color: primaryColor,
           inAsyncCall: showSpinner,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 30.w),
@@ -150,6 +166,15 @@ class _SignupState extends State<Signup> {
                           ),
                           SizedBox(
                             height: 20.h,
+                          ),
+                          TextField(
+                            controller: _nameController,
+                            decoration: kTextFieldDecoration.copyWith(
+                                errorText: _nameValidated ? null : error,
+                                hintText: 'Full Name'),
+                          ),
+                          SizedBox(
+                            height: 12.h,
                           ),
                           TextField(
                             controller: _usernameController,

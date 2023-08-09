@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frendify/Views/email_verification_screen.dart';
-import 'package:frendify/Views/forgetpassword.dart';
-import 'package:frendify/Views/home_screen.dart';
-import 'package:frendify/Views/login_screen.dart';
+import 'package:frendify/Screens/email_verification_screen.dart';
+import 'package:frendify/Screens/forgetpassword.dart';
+import 'package:frendify/Screens/home_screen.dart';
+import 'package:frendify/Screens/login_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/Views/feed_screen.dart';
+import 'package:frendify/Screens/feed_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'firebase_options.dart';
 
 Future main() async {

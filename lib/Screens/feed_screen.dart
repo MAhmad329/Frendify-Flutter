@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/Views/notification_screen.dart';
-import 'package:frendify/Views/myprofile_screen.dart';
+import 'package:frendify/Screens/notification_screen.dart';
+import 'package:frendify/Screens/myprofile_screen.dart';
+import '../Authentication/auth.dart';
 import '../constants.dart';
-import '../widgets/post.dart';
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -21,7 +21,9 @@ class FeedScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MyProfileScreen(),
+                  builder: (context) => MyProfileScreen(
+                    userId: Auth().currentUser!.uid,
+                  ),
                 ),
               );
             },
@@ -81,25 +83,25 @@ class FeedScreen extends StatelessWidget {
           bottom: false,
           child: TabBarView(
             children: [
-              SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    Post(),
-                    Post(),
-                    Post(),
-                    Post(),
-                  ],
-                ),
-              ),
-              SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    Post(),
-                  ],
-                ),
-              ),
+              // SingleChildScrollView(
+              //   physics: AlwaysScrollableScrollPhysics(),
+              //   child: Column(
+              //     children: [
+              //       Post(),
+              //       Post(),
+              //       Post(),
+              //       Post(),
+              //     ],
+              //   ),
+              // ),
+              // SingleChildScrollView(
+              //   physics: AlwaysScrollableScrollPhysics(),
+              //   child: Column(
+              //     children: [
+              //       Post(),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),

@@ -1,5 +1,5 @@
-class ProfileInfo {
-  const ProfileInfo({
+class ProfileModel {
+  const ProfileModel({
     required this.name,
     required this.following,
     required this.followers,
@@ -10,7 +10,7 @@ class ProfileInfo {
   final String followers;
 }
 
-ProfileInfo profileUser = const ProfileInfo(
+ProfileModel profileUser = const ProfileModel(
   name: 'Ahmad',
   following: '1200',
   followers: '800',

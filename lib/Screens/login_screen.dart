@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frendify/Controllers/auth.dart';
+import 'package:frendify/Authentication/auth.dart';
 import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 import '../widgets/custom_rich_text.dart';
@@ -30,7 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
       await Auth().signIn(
-          email: _emailController.text, password: _passwordController.text);
+          email: _emailController.text.trim(),
+          password: _passwordController.text);
 
       if (mounted) {
         if (Auth().currentUser!.emailVerified) {
@@ -66,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: ModalProgressHUD(
+        color: primaryColor,
         inAsyncCall: showSpinner,
         child: SafeArea(
           child: Padding(

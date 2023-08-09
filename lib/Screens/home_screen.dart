@@ -2,13 +2,14 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:frendify/Screens/search_screen.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:frendify/Views/settings_screen.dart';
+import 'package:frendify/Screens/settings_screen.dart';
 import '../constants.dart';
 import 'add_post.dart';
 import 'chats_screen.dart';
-import 'explore_screen.dart';
 import 'feed_screen.dart';
+import '../widgets/mbs_addition_options.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final screens = const [
     FeedScreen(),
-    ExploreScreen(),
+    SearchScreen(),
     Chats(),
     SettingsScreen(),
   ];
@@ -71,60 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  additionalPostOption() {
-    return Wrap(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 20.0.w, bottom: 20.h),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h),
-                child: InkWell(
-                  onTap: () async {
-                    await pickImage(ImageSource.camera);
-                    navigateToAddPost();
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Take a picture using the Camera',
-                        style: kHeading.copyWith(
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h),
-                child: InkWell(
-                  onTap: () async {
-                    await pickImage(ImageSource.gallery);
-                    navigateToAddPost();
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Select from Gallery',
-                        style: kHeading.copyWith(
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,7 +95,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           BorderRadius.vertical(top: Radius.circular(25.r))),
                   context: context,
                   builder: (context) {
-                    return additionalPostOption();
+                    return additionalOptions(
+                      onPressFunc1: () async {
+                        Navigator.pop(context);
+                        await pickImage(ImageSource.camera);
+                        navigateToAddPost();
+                      },
+                      onPressFunc2: () async {
+                        Navigator.pop(context);
+                        await pickImage(ImageSource.gallery);
+                        navigateToAddPost();
+                      },
+                    );
                   },
                 );
               },
