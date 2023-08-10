@@ -62,10 +62,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     if (searchText.isEmpty) {
                       return Container();
                     }
-                    if (data['name']
+                    if (data['username']
                         .toString()
                         .toLowerCase()
-                        .startsWith(searchText.toLowerCase())) {
+                        .contains(searchText.toLowerCase())) {
                       return InkWell(
                         onTap: () {
                           Navigator.push(
