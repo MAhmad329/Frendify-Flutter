@@ -41,7 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   pickImage(source) async {
     try {
-      final image = await ImagePicker().pickImage(source: source);
+      final image =
+          await ImagePicker().pickImage(source: source, imageQuality: 50);
       if (image == null) {
         setState(() => imageFile = null); // Reset imageFile to null
         return;

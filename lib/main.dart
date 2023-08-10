@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (context, child) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             initialRoute: 'login_screen',
             routes: {
               'login_screen': (context) => const LoginScreen(),

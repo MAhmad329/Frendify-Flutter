@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/Authentication/auth.dart';
 import 'package:frendify/Screens/home_screen.dart';
-
 import 'package:frendify/constants.dart';
 import 'package:frendify/widgets/button.dart';
 
@@ -67,9 +65,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     if (currentUser != null) {
       await currentUser.reload();
       if (mounted) {
-        setState(() {
-          isEmailVerified = currentUser.emailVerified;
-        });
+        setState(
+          () {
+            isEmailVerified = currentUser.emailVerified;
+          },
+        );
 
         if (isEmailVerified) {
           timer?.cancel();

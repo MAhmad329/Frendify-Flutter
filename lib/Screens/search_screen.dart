@@ -15,32 +15,16 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   String searchText = '';
-
-  Future<List<Map<String, dynamic>>> _searchUsers() async {
-    if (searchText.isEmpty) {
-      return []; // Return an empty list if search text is empty
-    }
-
-    final QuerySnapshot snapshot = await Auth().db.collection('users').get();
-    final List<Map<String, dynamic>> users = [];
-
-    for (var doc in snapshot.docs) {
-      final data = doc.data() as Map<String, dynamic>;
-      if (data['name'].toString().startsWith(searchText.toLowerCase())) {
-        users.add(data);
-      }
-    }
-
-    return users;
-  }
-
+  List<Map<String, dynamic>> data = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Container(
+          // Add padding around the search bar
           padding: EdgeInsets.symmetric(horizontal: 8.0.w),
+          // Use a Material design search bar
           child: TextField(
             onChanged: (val) {
               setState(() {
@@ -63,63 +47,62 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _searchUsers(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: primaryColor,
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else if (searchText.isNotEmpty &&
-              (!snapshot.hasData || snapshot.data!.isEmpty)) {
-            return const Center(
-              child: Text('No matching users found.'),
-            );
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final data = snapshot.data![index];
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            MyProfileScreen(userId: data['userid']),
-                      ),
-                    );
+      body: StreamBuilder<QuerySnapshot>(
+        stream: Auth().db.collection('users').snapshots(),
+        builder: (context, snapshots) {
+          return (snapshots.connectionState == ConnectionState.waiting)
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView.builder(
+                  itemCount: snapshots.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    var data = snapshots.data!.docs[index].data()
+                        as Map<String, dynamic>;
+                    if (searchText.isEmpty) {
+                      return Container();
+                    }
+                    if (data['name']
+                        .toString()
+                        .startsWith(searchText.toLowerCase())) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  MyProfileScreen(userId: data['userid']),
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          title: Text(
+                            data['username'],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: kText2.copyWith(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black),
+                          ),
+                          subtitle: Text(
+                            data['name'],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: kText2,
+                          ),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            backgroundImage: NetworkImage(
+                              data['pfp'],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return Container();
                   },
-                  child: ListTile(
-                    title: Text(
-                      data['name'],
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: kText2,
-                    ),
-                    subtitle: Text(
-                      data['email'],
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: kText2,
-                    ),
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      backgroundImage: NetworkImage(
-                        data['pfp'],
-                      ),
-                    ),
-                  ),
                 );
-              },
-            );
-          }
         },
       ),
     );

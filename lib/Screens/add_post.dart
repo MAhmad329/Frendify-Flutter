@@ -61,21 +61,23 @@ class _AddPostState extends State<AddPost> {
       };
 
       await Auth().db.collection('posts').add(postData);
-      setState(() {
-        isLoading = false;
-      });
+      setState(
+        () {
+          isLoading = false;
+        },
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Post Uploaded!')),
+          const SnackBar(
+            content: Text('Post Uploaded!'),
+          ),
         );
-        Navigator.popAndPushNamed(context, 'profile_screen');
+        Navigator.pop(context);
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('There was an error upload the post:')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('There was an error uploading the post:')),
+      );
     }
   }
 
@@ -85,6 +87,9 @@ class _AddPostState extends State<AddPost> {
         child: ModalProgressHUD(
       color: primaryColor,
       inAsyncCall: isLoading,
+      progressIndicator: CircularProgressIndicator(
+        color: primaryColor,
+      ),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
@@ -178,7 +183,9 @@ class _AddPostState extends State<AddPost> {
                       buttonColor: primaryColor,
                       buttonWidth: 160.w,
                       buttonHeight: 50,
-                      onTap: _savePostData,
+                      onTap: () {
+                        _savePostData();
+                      },
                     ),
                   ],
                 ),

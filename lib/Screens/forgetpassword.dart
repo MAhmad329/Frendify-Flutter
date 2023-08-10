@@ -40,6 +40,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         child: ModalProgressHUD(
           color: primaryColor,
           inAsyncCall: showSpinner,
+          progressIndicator: CircularProgressIndicator(
+            color: primaryColor,
+          ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 30.w),
             child: Column(

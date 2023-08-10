@@ -68,6 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset: false,
       body: ModalProgressHUD(
         color: primaryColor,
+        progressIndicator: CircularProgressIndicator(
+          color: primaryColor,
+        ),
         inAsyncCall: showSpinner,
         child: SafeArea(
           child: Padding(

@@ -10,7 +10,7 @@ import 'dart:io';
 import 'mbs_addition_options.dart';
 
 class ProfileInfo extends StatefulWidget {
-  ProfileInfo({
+  const ProfileInfo({
     required this.username,
     required this.following,
     required this.followers,
@@ -21,7 +21,7 @@ class ProfileInfo extends StatefulWidget {
     super.key,
   });
   final String username;
-  final String following;
+  final List<dynamic> following;
   final List<dynamic> followers;
   final String pfp;
   final bool isCurrentUser;
@@ -34,11 +34,13 @@ class ProfileInfo extends StatefulWidget {
 
 class _ProfileInfoState extends State<ProfileInfo> {
   String noOfFollowers = '';
+  String noOfFollowing = '';
   bool isLoading = false;
   late Stream<DocumentSnapshot> postStream;
 
   Future<void> uploadImage(source) async {
-    XFile? file = await ImagePicker().pickImage(source: source);
+    XFile? file =
+        await ImagePicker().pickImage(source: source, imageQuality: 50);
 
     if (file == null) return;
     String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
@@ -72,14 +74,20 @@ class _ProfileInfoState extends State<ProfileInfo> {
     setState(() => isLoading = false);
   }
 
-  void getNoOfFollowers() async {
+  void getNoOfFollowersAndFollowing() async {
     final followers =
         (await Auth().db.collection('users').doc(widget.userId).get())
             .data()!['followers']
             .length
             .toString();
+    final following =
+        (await Auth().db.collection('users').doc(widget.userId).get())
+            .data()!['following']
+            .length
+            .toString();
     setState(() {
       noOfFollowers = followers;
+      noOfFollowing = following;
     });
   }
 
@@ -89,7 +97,8 @@ class _ProfileInfoState extends State<ProfileInfo> {
     postStream = Auth().db.collection('users').doc(widget.userId).snapshots();
     postStream.listen(
       (DocumentSnapshot postSnapshot) {
-        getNoOfFollowers();
+        widget.updateUserData;
+        getNoOfFollowersAndFollowing();
       },
     );
   }
@@ -209,7 +218,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                 child: Column(
                   children: [
                     Text(
-                      widget.following,
+                      noOfFollowing,
                       style: kText1.copyWith(
                         fontSize: 20.sp,
                       ),

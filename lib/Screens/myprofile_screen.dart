@@ -21,6 +21,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   bool isCurrentUser = false;
   String userName = '';
   String name = '';
+  String email = '';
   List following = [];
   List followers = [];
   String pfp = '';
@@ -44,15 +45,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         return;
       }
 
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.userId)
-          .get();
+      final userDoc =
+          await Auth().db.collection('users').doc(widget.userId).get();
 
       setState(() {
         isCurrentUser = currentUser.uid == widget.userId;
         userName = userDoc['username'];
         name = userDoc['name'];
+        email = userDoc['email'];
         following = userDoc['following'] as List<dynamic>;
         followers = userDoc['followers'] as List<dynamic>;
         pfp = userDoc['pfp'].toString();
@@ -81,20 +81,35 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       isFollowed = !isFollowed;
     });
 
-    final postDocRef = Auth().db.collection('users').doc(widget.userId);
+    final postDocRef1 = Auth().db.collection('users').doc(widget.userId);
+    final postDocRef2 = Auth().db.collection('users').doc(currentUser.uid);
 
     if (isFollowed) {
-      await postDocRef.update(
+      await postDocRef1.update(
         {
-          'followers': FieldValue.arrayUnion([currentUser.email])
+          'followers': FieldValue.arrayUnion(
+            [currentUser.email],
+          ),
+        },
+      );
+      await postDocRef2.update(
+        {
+          'following': FieldValue.arrayUnion(
+            [email],
+          ),
         },
       );
     } else {
-      postDocRef.update(
+      await postDocRef1.update(
         {
-          'followers': FieldValue.arrayRemove([currentUser.email])
+          'followers': FieldValue.arrayRemove(
+            [currentUser.email],
+          ),
         },
       );
+      await postDocRef2.update({
+        'following': FieldValue.arrayRemove([email])
+      });
     }
   }
 
@@ -137,7 +152,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           children: [
             ProfileInfo(
                 username: userName,
-                following: '0',
+                following: following,
                 followers: followers,
                 pfp: pfp,
                 isCurrentUser: isCurrentUser,

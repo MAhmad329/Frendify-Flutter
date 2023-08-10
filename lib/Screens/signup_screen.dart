@@ -141,6 +141,9 @@ class _SignupState extends State<Signup> {
         child: ModalProgressHUD(
           color: primaryColor,
           inAsyncCall: showSpinner,
+          progressIndicator: CircularProgressIndicator(
+            color: primaryColor,
+          ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 30.w),
             child: Row(
