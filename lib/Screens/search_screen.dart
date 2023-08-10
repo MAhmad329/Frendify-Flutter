@@ -64,14 +64,16 @@ class _SearchScreenState extends State<SearchScreen> {
                     }
                     if (data['name']
                         .toString()
+                        .toLowerCase()
                         .startsWith(searchText.toLowerCase())) {
                       return InkWell(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  MyProfileScreen(userId: data['userid']),
+                              builder: (context) => MyProfileScreen(
+                                userId: data['userid'],
+                              ),
                             ),
                           );
                         },
@@ -81,8 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: kText2.copyWith(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.black),
                           ),
                           subtitle: Text(
