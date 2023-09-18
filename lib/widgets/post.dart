@@ -6,23 +6,28 @@ import 'package:frendify/constants.dart';
 import 'package:frendify/Models/comments_model.dart';
 import 'package:frendify/widgets/text_input.dart';
 import '../Authentication/auth.dart';
-import 'bottom_sheet_lists.dart';
 import 'bottom_sheet.dart';
 import 'comment_list_view.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class Post extends StatefulWidget {
-  const Post({Key? key, required this.postId, required this.postImageUrl})
+  const Post(
+      {Key? key,
+      required this.postId,
+      required this.postImageUrl,
+      required this.detailed})
       : super(key: key);
 
   final String postId;
   final String postImageUrl;
+  final bool detailed;
 
   @override
   State<Post> createState() => _PostState();
 }
 
 class _PostState extends State<Post> {
+  bool deleting = false;
   String caption = '';
   String postAuthorName = '';
   String postAuthorPfp = '';
@@ -34,13 +39,15 @@ class _PostState extends State<Post> {
   String postAuthorId = '';
   final currentUser = Auth().currentUser!;
   late Stream<DocumentSnapshot> postStream;
+  late DocumentReference postDocRef;
 
   @override
   void initState() {
     super.initState();
     fetchPostData();
     checkInitialLikeState();
-    postStream = Auth().db.collection('posts').doc(widget.postId).snapshots();
+    postDocRef = Auth().db.collection('posts').doc(widget.postId);
+    postStream = postDocRef.snapshots();
     postStream.listen(
       (DocumentSnapshot postSnapshot) {
         getNoOfLikes();
@@ -52,12 +59,16 @@ class _PostState extends State<Post> {
   Future<void> fetchPostData() async {
     final postDocSnapshot =
         await Auth().db.collection('posts').doc(widget.postId).get();
+
     caption = postDocSnapshot.data()!['caption'];
-    postAuthorName = postDocSnapshot.data()!['authorName'];
-    postAuthorPfp = postDocSnapshot.data()!['authorPfp'];
     postAuthorId = postDocSnapshot.data()!['authorID'];
     final timestamp = postDocSnapshot.data()!['timestamp'];
     postTimeFormatted = getFormattedTime(timestamp);
+
+    final userDocSnapshot =
+        await Auth().db.collection('users').doc(postAuthorId).get();
+    postAuthorPfp = userDocSnapshot.data()!['pfp'];
+    postAuthorName = userDocSnapshot.data()!['name'];
   }
 
   void getNoOfLikes() async {
@@ -83,8 +94,6 @@ class _PostState extends State<Post> {
     setState(() {
       isLiked = !isLiked;
     });
-
-    final postDocRef = Auth().db.collection('posts').doc(widget.postId);
 
     if (isLiked) {
       await postDocRef.update(
@@ -114,14 +123,8 @@ class _PostState extends State<Post> {
   }
 
   Future<void> submitComment(String comment) async {
-    final postDocRef = Auth().db.collection('posts').doc(widget.postId);
-    final userData =
-        (await Auth().db.collection('users').doc(Auth().currentUser?.uid).get())
-            .data();
     final commentData = {
       'authorId': currentUser.uid,
-      'authorName': userData?['name'],
-      'authorPicture': userData?['pfp'],
       'comment': comment,
       'timestamp': Timestamp.now(),
     };
@@ -135,23 +138,33 @@ class _PostState extends State<Post> {
   }
 
   Future<void> fetchComments() async {
-    final postDocRef = Auth().db.collection('posts').doc(widget.postId);
     try {
       final postSnapshot = await postDocRef.get();
 
       if (postSnapshot.exists) {
         final commentsData = postSnapshot['comments'] as List<dynamic>;
 
+        // Fetch user data for comments
+        final commentsWithUserData =
+            await Future.wait(commentsData.map((commentData) async {
+          final author = await Auth()
+              .db
+              .collection('users')
+              .doc(commentData['authorId'])
+              .get();
+          final userData = author.data();
+
+          return Comment(
+            comment: commentData['comment'],
+            authorName: userData?['name'],
+            authorId: commentData['authorId'],
+            authorPicture: userData?['pfp'],
+          );
+        }));
+
         setState(
           () {
-            comments = commentsData.map(
-              (commentData) {
-                return Comment(
-                    authorName: commentData['authorName'],
-                    comment: commentData['comment'],
-                    authorPicture: commentData['authorPicture']);
-              },
-            ).toList();
+            comments = commentsWithUserData;
             _loadingComments = false;
           },
         );
@@ -165,16 +178,60 @@ class _PostState extends State<Post> {
     }
   }
 
+  Future<void> deletePost() async {
+    if (deleting) return; // Avoid multiple delete attempts
+
+    setState(() {
+      deleting = true;
+    });
+
+    try {
+      await postDocRef.delete();
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Center(
+            child: Text('There Was An Error Deleting the Post!'),
+          ),
+        ),
+      );
+    } finally {
+      setState(() {
+        deleting = false;
+      });
+    }
+  }
+
+  double itemHeight(BuildContext context) {
+    // Calculate the post item height based on the screen size
+    double screenHeight = MediaQuery.of(context).size.height;
+    double itemHeight = screenHeight * 0.2; // Adjust this value as needed
+    return itemHeight;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
       child: SafeArea(
         child: Scaffold(
-          bottomSheet: CustomTextInput(
-              hintText: 'Type your comment here...',
-              onSubmitted: submitComment),
+          appBar: widget.detailed
+              ? AppBar(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  title: const Text('Post'),
+                  centerTitle: true,
+                )
+              : null,
+          bottomSheet: widget.detailed
+              ? CustomTextInput(
+                  hintText: 'Type your comment here...',
+                  onSubmitted: submitComment)
+              : null,
           resizeToAvoidBottomInset: true,
           body: ListView(
+            physics: widget.detailed
+                ? const AlwaysScrollableScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
             children: [
               Container(
                 height: 15,
@@ -206,9 +263,11 @@ class _PostState extends State<Post> {
                                 children: [
                                   CircleAvatar(
                                     radius: 20.r,
-                                    backgroundColor: Colors.transparent,
-                                    backgroundImage:
-                                        NetworkImage(postAuthorPfp),
+                                    backgroundColor: Colors.black,
+                                    backgroundImage: postAuthorPfp.isNotEmpty
+                                        ? NetworkImage(postAuthorPfp)
+                                        : const NetworkImage(
+                                            'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'),
                                   ),
                                   Padding(
                                     padding:
@@ -251,7 +310,31 @@ class _PostState extends State<Post> {
                                 context: context,
                                 builder: (context) {
                                   return BotSheet(
-                                    bottomBarList: homePageBottomBarList,
+                                    bottomBarList: [
+                                      if (postAuthorId == currentUser.uid)
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10.h),
+                                          child: InkWell(
+                                            onTap: () {
+                                              deletePost();
+                                              Navigator.pop(context);
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Delete Post',
+                                                  style: kHeading.copyWith(
+                                                    fontSize: 16.sp,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   );
                                 },
                               );
@@ -276,12 +359,31 @@ class _PostState extends State<Post> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(15.0.r),
-                              child: Image(
-                                fit: BoxFit.cover,
-                                height: 175.h,
-                                image: NetworkImage(widget.postImageUrl),
+                            child: GestureDetector(
+                              onTap: () {
+                                // Show the full-sized image in a dialog
+                                showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return Container(
+                                      color: Colors.black,
+                                      child: InteractiveViewer(
+                                        child: Image.network(
+                                          widget.postImageUrl,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.network(
+                                  widget.postImageUrl,
+                                  fit: BoxFit.cover,
+                                  height: 175.0.h,
+                                ),
                               ),
                             ),
                           ),
@@ -369,7 +471,7 @@ class _PostState extends State<Post> {
                   ),
                 ),
               ),
-              if (comments.isEmpty && _loadingComments)
+              if (widget.detailed && comments.isEmpty && _loadingComments)
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 150.0.h),
                   child: Center(
@@ -380,17 +482,21 @@ class _PostState extends State<Post> {
                 ),
 
               // Comments section
-              if (comments.isEmpty && !_loadingComments)
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 150.0.h),
-                  child: const Column(
-                    children: [Text('Be the first one to comment!')],
-                  ),
+              if (widget.detailed && comments.isEmpty && !_loadingComments)
+                const Column(
+                  children: [Text('Be the first one to comment!')],
                 ),
-              if (comments.isNotEmpty) CommentListView(comments: comments),
-              if (comments.isNotEmpty)
+              if (widget.detailed && comments.isNotEmpty)
+                CommentListView(comments: comments),
+              if (widget.detailed && comments.isNotEmpty)
                 SizedBox(
-                  height: 50.h,
+                  height: 60.h,
+                ),
+              if (deleting)
+                Center(
+                  child: CircularProgressIndicator(
+                    color: primaryColor,
+                  ),
                 ),
             ],
           ),

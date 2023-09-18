@@ -1,12 +1,44 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/Screens/notification_screen.dart';
 import 'package:frendify/Screens/myprofile_screen.dart';
 import '../Authentication/auth.dart';
 import '../constants.dart';
+import '../widgets/post.dart';
 
-class FeedScreen extends StatelessWidget {
+class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
+
+  @override
+  State<FeedScreen> createState() => _FeedScreenState();
+}
+
+class _FeedScreenState extends State<FeedScreen> {
+  Future<List<Post>> fetchPosts() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await Auth()
+        .db
+        .collection('posts')
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    List<Post> posts = querySnapshot.docs.map((doc) {
+      return Post(
+        postId: doc.id,
+        postImageUrl: doc.data()['imageUrl'],
+        detailed: false,
+      );
+    }).toList();
+
+    return posts;
+  }
+
+  double postItemHeight(BuildContext context) {
+    // Calculate the post item height based on the screen size
+    double screenHeight = MediaQuery.of(context).size.height;
+    double postHeight = screenHeight * 0.47; // Adjust this value as needed
+    return postHeight;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,10 +111,41 @@ class FeedScreen extends StatelessWidget {
           elevation: 0.5,
         ),
         resizeToAvoidBottomInset: false,
-        body: const SafeArea(
+        body: SafeArea(
           bottom: false,
           child: TabBarView(
             children: [
+              FutureBuilder<List<Post>>(
+                future: fetchPosts(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      // Wrap the CircularProgressIndicator with Center
+                      child: CircularProgressIndicator(
+                        color: primaryColor,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Text('Error loading posts');
+                  } else {
+                    List<Post> posts = snapshot.data ?? [];
+                    return ListView.builder(
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) {
+                        return SizedBox(
+                          height: postItemHeight(context),
+                          child: Post(
+                            postId: posts[index].postId,
+                            postImageUrl: posts[index].postImageUrl,
+                            detailed: false,
+                            // Pass any other required data
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
               // SingleChildScrollView(
               //   physics: AlwaysScrollableScrollPhysics(),
               //   child: Column(

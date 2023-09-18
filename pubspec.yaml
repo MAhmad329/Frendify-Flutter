@@ -47,6 +47,7 @@ dependencies:
   firebase_storage: ^11.2.5
   timeago: ^3.5.0
   easy_search_bar: ^2.5.0
+  intl: ^0.18.1
 
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frendify/Models/comments_model.dart';
+import 'package:frendify/Screens/myprofile_screen.dart';
 
 class CommentListView extends StatelessWidget {
   final List<Comment> comments;
@@ -14,14 +15,27 @@ class CommentListView extends StatelessWidget {
       itemCount: comments.length,
       itemBuilder: (context, index) {
         final comment = comments[index];
-        return ListTile(
-          leading: CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.transparent,
-            backgroundImage: NetworkImage(comment.authorPicture),
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyProfileScreen(userId: comment.authorId),
+              ),
+            );
+          },
+          child: ListTile(
+            leading: CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.black,
+              backgroundImage: comment.authorPicture.isNotEmpty
+                  ? NetworkImage(comment.authorPicture)
+                  : const NetworkImage(
+                      'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'),
+            ),
+            title: Text(comment.authorName),
+            subtitle: Text(comment.comment),
           ),
-          title: Text(comment.authorName),
-          subtitle: Text(comment.comment),
         );
       },
     );

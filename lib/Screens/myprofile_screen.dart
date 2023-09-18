@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/Authentication/auth.dart';
+import 'package:frendify/Screens/chatdetails_screen.dart';
 import 'package:frendify/widgets/post.dart';
 import '../constants.dart';
 import '../widgets/button.dart';
@@ -17,7 +18,7 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final currentUser = Auth().currentUser!;
   bool isFollowed = false;
-
+  bool isLoading = false;
   bool isCurrentUser = false;
   String userName = '';
   String name = '';
@@ -141,20 +142,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             },
           ),
           title: Text(name),
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.more_horiz),
-            ),
-          ],
         ),
         body: Column(
           children: [
             ProfileInfo(
                 username: userName,
-                following: following,
-                followers: followers,
-                pfp: pfp,
+                pfp: pfp.isNotEmpty
+                    ? pfp
+                    : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',
                 isCurrentUser: isCurrentUser,
                 userId: widget.userId,
                 updateUserData: getUserData),
@@ -179,12 +174,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           width: 20.w,
                         ),
                         MyButton(
-                            buttonText: 'Message',
-                            buttonColor: Colors.white,
-                            borderColor: primaryColor,
-                            textColor: primaryColor,
-                            buttonWidth: 110.w,
-                            buttonHeight: 30.h),
+                          buttonText: 'Message',
+                          buttonColor: Colors.white,
+                          borderColor: primaryColor,
+                          textColor: primaryColor,
+                          buttonWidth: 110.w,
+                          buttonHeight: 30.h,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatDetailsScreen(
+                                  userId: widget.userId,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ],
                     ),
             ),
@@ -274,6 +280,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                         builder: (context) => Post(
                                           postId: posts[index].id,
                                           postImageUrl: imageUrl,
+                                          detailed: true,
                                           // postLikes: postLikes,
                                         ),
                                       ),

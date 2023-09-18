@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frendify/Authentication/auth.dart';
+import 'package:frendify/Screens/followers_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import '../constants.dart';
 import 'dart:io';
@@ -12,8 +13,6 @@ import 'mbs_addition_options.dart';
 class ProfileInfo extends StatefulWidget {
   const ProfileInfo({
     required this.username,
-    required this.following,
-    required this.followers,
     required this.pfp,
     required this.isCurrentUser,
     required this.userId,
@@ -21,8 +20,6 @@ class ProfileInfo extends StatefulWidget {
     super.key,
   });
   final String username;
-  final List<dynamic> following;
-  final List<dynamic> followers;
   final String pfp;
   final bool isCurrentUser;
   final String userId;
@@ -33,6 +30,8 @@ class ProfileInfo extends StatefulWidget {
 }
 
 class _ProfileInfoState extends State<ProfileInfo> {
+  List<dynamic> followers = [];
+  List<dynamic> followings = [];
   String noOfFollowers = '';
   String noOfFollowing = '';
   bool isLoading = false;
@@ -75,19 +74,16 @@ class _ProfileInfoState extends State<ProfileInfo> {
   }
 
   void getNoOfFollowersAndFollowing() async {
-    final followers =
-        (await Auth().db.collection('users').doc(widget.userId).get())
-            .data()!['followers']
-            .length
-            .toString();
-    final following =
-        (await Auth().db.collection('users').doc(widget.userId).get())
-            .data()!['following']
-            .length
-            .toString();
+    followers = (await Auth().db.collection('users').doc(widget.userId).get())
+        .data()!['followers'] as List<dynamic>;
+    followings = (await Auth().db.collection('users').doc(widget.userId).get())
+        .data()!['following'] as List<dynamic>;
+
+    final followerNo = followers.length.toString();
+    final followingNo = followings.length.toString();
     setState(() {
-      noOfFollowers = followers;
-      noOfFollowing = following;
+      noOfFollowers = followerNo;
+      noOfFollowing = followingNo;
     });
   }
 
@@ -143,7 +139,22 @@ class _ProfileInfoState extends State<ProfileInfo> {
                               },
                             );
                           }
-                        : () {},
+                        : () {
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return Container(
+                                  color: Colors.black,
+                                  child: InteractiveViewer(
+                                    child: Image.network(
+                                      widget.pfp,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                     child: Stack(
                       children: [
                         // Display the image or placeholder
@@ -158,13 +169,6 @@ class _ProfileInfoState extends State<ProfileInfo> {
                             backgroundImage: NetworkImage(widget.pfp),
                             backgroundColor: Colors.black, // Placeholder color
                             radius: 60.r,
-                            child: isLoading
-                                ? null
-                                : Icon(
-                                    Icons.camera_alt_outlined,
-                                    color: Colors.grey,
-                                    size: 25.r,
-                                  ),
                           ),
 
                         if (isLoading)
@@ -196,6 +200,16 @@ class _ProfileInfoState extends State<ProfileInfo> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowersScreen(
+                        follows: followers,
+                      ),
+                    ),
+                  );
+                },
                 child: Column(
                   children: [
                     Text(
@@ -215,6 +229,16 @@ class _ProfileInfoState extends State<ProfileInfo> {
                 ),
               ),
               InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowersScreen(
+                        follows: followings,
+                      ),
+                    ),
+                  );
+                },
                 child: Column(
                   children: [
                     Text(
